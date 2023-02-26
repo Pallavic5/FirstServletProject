@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
         }
 )
 public class LoginServlet extends HttpServlet {
-    // Define the post method when api calls
+    // Define the post method for when api calls the endpoint
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -38,10 +38,23 @@ public class LoginServlet extends HttpServlet {
         Pattern userPattern = Pattern.compile("^([A-Z][a-zA-Z]{2,}[ ]?)+$");
         Matcher userMatcher = userPattern.matcher(userInput);
 
+        //Using the regex pattern and matcher method to check for password of the user
+        Pattern pwdPattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\\d)(?=.*[@$!%*#?&]{1})[A-Za-z\\d@$!%*?&]{8,}$");
+        Matcher pwdMatcher = pwdPattern.matcher(pwdInput);
+
         // If the matcher does not matches then we will return it
         if(!userMatcher.matches()) {
             PrintWriter out = response.getWriter();
             out.println("<font color = red> Incorrect UserId. Please try again!!<font>");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
+            rd.include(request, response);
+            return;
+        }
+
+        // If the matcher does not matches then we will return it
+        if(!pwdMatcher.matches()) {
+            PrintWriter out = response.getWriter();
+            out.println("<font color = blue> Incorrect Password. Please try again!!<font>");
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
             rd.include(request, response);
             return;
