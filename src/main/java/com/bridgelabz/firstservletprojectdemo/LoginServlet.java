@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
         }
 )
 public class LoginServlet extends HttpServlet {
-    // Define the post method for when api calls the endpoint
+    // Define the post method when api calls
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -33,6 +33,20 @@ public class LoginServlet extends HttpServlet {
         // The user and password are retrieved from the initial params of the servlet
         String user = getServletConfig().getInitParameter("user");
         String password = getServletConfig().getInitParameter("password");
+
+        //Using the regex pattern and matcher method to check for user name of the user
+        Pattern userPattern = Pattern.compile("^([A-Z][a-zA-Z]{2,}[ ]?)+$");
+        Matcher userMatcher = userPattern.matcher(userInput);
+
+        // If the matcher does not matches then we will return it
+        if(!userMatcher.matches()) {
+            PrintWriter out = response.getWriter();
+            out.println("<font color = red> Incorrect UserId. Please try again!!<font>");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
+            rd.include(request, response);
+            return;
+        }
+
 
         if (user.equals(userInput) && password.equals(pwdInput)) {
             request.setAttribute("user", user);
